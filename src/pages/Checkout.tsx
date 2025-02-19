@@ -21,7 +21,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
 import { useState } from "react";
 
 type CheckoutForm = {
