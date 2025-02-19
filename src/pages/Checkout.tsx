@@ -57,7 +57,7 @@ const Checkout = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">الدفع</h1>
 
-          <div className="grid gap-8 md:grid-cols-[1fr,380px]">
+          <div className="grid gap-6 px-4 md:grid-cols-[1fr,380px]">
             <div className="space-y-8">
               <div className="bg-card rounded-lg shadow-sm p-6">
                 <h2 className="text-xl font-semibold mb-6">اختر وسيلة الدفع</h2>
