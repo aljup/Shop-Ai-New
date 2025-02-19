@@ -12,17 +12,19 @@ export const Navbar = () => {
     <nav className="w-full fixed top-0 z-50 glass">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="text-xl font-semibold">
-          Store
+          المتجر
         </Link>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" className="relative" onClick={() => {}}>
-            <ShoppingCart className="h-5 w-5" />
-            {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 text-xs flex items-center justify-center">
-                {itemCount}
-              </span>
-            )}
-          </Button>
+          <Link to="/cart">
+            <Button variant="ghost" className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 text-xs flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>
