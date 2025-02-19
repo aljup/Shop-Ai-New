@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { Navbar } from "@/components/Navbar";
@@ -93,8 +94,32 @@ export const Profile = () => {
           <Card>
             <CardHeader>
               <CardTitle>الملف الشخصي</CardTitle>
+              <div className="flex items-center mt-4">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${profile.name || user?.email}`} />
+                  <AvatarFallback>{profile.name?.[0] || user?.email?.[0]}</AvatarFallback>
+                </Avatar>
+                <div className="mr-4">
+                  <h2 className="text-2xl font-bold">{profile.name || "لم يتم تحديد الاسم"}</h2>
+                  <p className="text-muted-foreground">{user?.email}</p>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-medium">حالة الحساب</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {user?.email_confirmed_at ? "مفعل" : "غير مفعل"}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-medium">تاريخ الانضمام</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(user?.created_at).toLocaleDateString('ar')}
+                  </p>
+                </div>
+              </div>
               {!user?.email_confirmed_at && (
                 <div className="bg-yellow-100 p-4 rounded-lg mb-4">
                   <p className="text-yellow-800">لم يتم تفعيل حسابك بعد</p>

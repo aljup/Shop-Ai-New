@@ -1,11 +1,31 @@
 
 import { Link } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCart } from "@/store/cart";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const cart = useCart();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user);
+    });
+  }, []);
   const itemCount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -25,9 +45,35 @@ export const Navbar = () => {
               )}
             </Button>
           </Link>
-          <Link to="/auth">
-            <Button variant="outline">تسجيل الدخول</Button>
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  {user.user_metadata.name || user.email}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">إدارة الحساب</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.href = '/';
+                  }}
+                  className="text-red-600"
+                >
+                  تسجيل الخروج
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/auth">
+              <Button variant="outline">تسجيل الدخول</Button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
