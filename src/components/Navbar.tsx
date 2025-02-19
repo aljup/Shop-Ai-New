@@ -25,6 +25,9 @@ export const Navbar = () => {
               )}
             </Button>
           </Link>
+          <Link to="/auth">
+            <Button variant="outline">تسجيل الدخول</Button>
+          </Link>
         </div>
       </div>
     </nav>
