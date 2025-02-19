@@ -94,27 +94,34 @@ const Checkout = () => {
               </Button>
             </div>
 
-            <div className="bg-card rounded-lg shadow-sm p-6 h-fit">
-              <h3 className="font-semibold mb-4">ملخص الطلب</h3>
-              <div className="space-y-4">
+            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/20">
+              <CardHeader>
+                <CardTitle className="text-xl text-center">ملخص الطلب</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                  <div key={item.id} className="flex items-center justify-between text-sm p-2 rounded-lg bg-background/50">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs text-primary">
+                        {item.quantity}
+                      </span>
+                      <span>{item.name}</span>
+                    </div>
+                    <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
-                <div className="pt-4 border-t mt-4">
-                  <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="mt-6 pt-4 border-t border-border/50">
+                  <div className="flex justify-between text-sm text-muted-foreground mb-3">
                     <span>الشحن</span>
-                    <span>مجاني</span>
+                    <span className="text-primary">مجاني</span>
                   </div>
-                  <div className="flex justify-between font-semibold mt-2">
+                  <div className="flex justify-between font-bold text-lg">
                     <span>الإجمالي</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span className="text-primary">${total.toFixed(2)}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
