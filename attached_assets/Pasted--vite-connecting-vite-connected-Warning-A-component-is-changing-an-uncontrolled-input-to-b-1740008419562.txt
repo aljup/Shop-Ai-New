@@ -1,0 +1,45 @@
+[vite] connecting...
+[vite] connected.
+Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/input.tsx:12:54)
+    at div
+    at div
+    at _c8 (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/card.tsx:84:61)
+    at div
+    at _c (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/card.tsx:12:53)
+    at div
+    at main
+    at div
+    at Profile (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/pages/Profile.tsx:22:22)
+    at RenderedRoute (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4069:5)
+    at Routes (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4508:5)
+    at Router (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4451:15)
+    at BrowserRouter (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:5196:5)
+    at Provider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/chunk-KF7TDO2V.js?v=900a8547:38:15)
+    at TooltipProvider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=900a8547:56:5)
+    at QueryClientProvider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/@tanstack_react-query.js?v=900a8547:2844:3)
+    at App
+at input
+at _c (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/input.tsx:12:54)
+at div
+at div
+at _c8 (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/card.tsx:84:61)
+at div
+at _c (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/components/ui/card.tsx:12:53)
+at div
+at main
+at div
+at Profile (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/src/pages/Profile.tsx:22:22)
+at RenderedRoute (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4069:5)
+at Routes (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4508:5)
+at Router (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:4451:15)
+at BrowserRouter (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=900a8547:5196:5)
+at Provider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/chunk-KF7TDO2V.js?v=900a8547:38:15)
+at TooltipProvider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=900a8547:56:5)
+at QueryClientProvider (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/node_modules/.vite/deps/@tanstack_react-query.js?v=900a8547:2844:3)
+at App
+at t.value (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://1869b12f-394c-427d-890c-addeaae20c1c-00-1n9xhbiv1lkdw.pike.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
