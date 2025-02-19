@@ -15,9 +15,10 @@ export const Profile = () => {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState({
     name: "",
-    email: "",
     phone: "",
+    avatar_url: "",
   });
+  const [uploading, setUploading] = useState(false);
   
   useEffect(() => {
     checkUser();
@@ -48,7 +49,9 @@ export const Profile = () => {
         .from('profiles')
         .upsert({
           id: user.id,
-          ...profile,
+          name: profile.name,
+          phone: profile.phone,
+          avatar_url: profile.avatar_url,
           updated_at: new Date()
         });
 
@@ -63,6 +66,46 @@ export const Profile = () => {
         title: "خطأ في تحديث الملف الشخصي",
         description: error.message
       });
+    }
+  };
+
+  const uploadAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('يرجى اختيار صورة');
+      }
+
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}-${Math.random()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      setProfile({ ...profile, avatar_url: data.publicUrl });
+      
+      toast({
+        title: "تم رفع الصورة بنجاح"
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ في رفع الصورة",
+        description: error.message
+      });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -95,10 +138,19 @@ export const Profile = () => {
             <CardHeader>
               <CardTitle>الملف الشخصي</CardTitle>
               <div className="flex items-center mt-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${profile.name || user?.email}`} />
-                  <AvatarFallback>{profile.name?.[0] || user?.email?.[0]}</AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={profile.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${profile.name || user?.email}`} />
+                    <AvatarFallback>{profile.name?.[0] || user?.email?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={uploadAvatar}
+                    disabled={uploading}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
                 <div className="mr-4">
                   <h2 className="text-2xl font-bold">{profile.name || "لم يتم تحديد الاسم"}</h2>
                   <p className="text-muted-foreground">{user?.email}</p>
