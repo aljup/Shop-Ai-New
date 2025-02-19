@@ -92,7 +92,9 @@ const Cart = () => {
                     <span>${total.toFixed(2)}</span>
                   </div>
                 </div>
-                <Button className="w-full mt-4">متابعة الدفع</Button>
+                <Link to="/checkout">
+                  <Button className="w-full mt-4">متابعة الدفع</Button>
+                </Link>
               </div>
             </div>
           </div>
