@@ -31,7 +31,7 @@ export const Auth = () => {
         toast({
           title: "تم تسجيل الدخول بنجاح",
         });
-        navigate("/");
+        navigate("/profile");
       } else {
         const { error } = await supabase.auth.signUp({
           email: formData.email,

@@ -6,7 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Auth from "./pages/Auth"; // Added import for Auth component
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile"; // Added import for Profile component
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,7 +22,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/auth" element={<Auth />} /> {/* Added Auth route */}
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} /> {/* Added Profile route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
