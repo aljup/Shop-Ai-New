@@ -63,7 +63,7 @@ export const Auth = () => {
         <Button 
           variant="ghost" 
           className="mb-4" 
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
         >
           <ArrowRight className="ml-2 h-4 w-4" />
           رجوع
