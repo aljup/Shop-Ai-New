@@ -164,6 +164,7 @@ export const Profile = () => {
                 <div className="mr-4">
                   <h2 className="text-2xl font-bold">{profile.name || "لم يتم تحديد الاسم"}</h2>
                   <p className="text-muted-foreground">{user?.email}</p>
+                  <p className="text-sm text-muted-foreground mt-1">معرف العضو: {user?.id}</p>
                 </div>
               </div>
             </CardHeader>
