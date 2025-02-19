@@ -17,6 +17,8 @@ export const Profile = () => {
     name: "",
     phone: "",
     avatar_url: "",
+    updated_at: null,
+    id: "",
   });
   const [uploading, setUploading] = useState(false);
   
@@ -40,6 +42,14 @@ export const Profile = () => {
       
     if (profile) {
       setProfile(profile);
+    } else {
+      setProfile({
+        id: user.id,
+        name: "",
+        phone: "",
+        avatar_url: "",
+        updated_at: null
+      });
     }
   };
 
