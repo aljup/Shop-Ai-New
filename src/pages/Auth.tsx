@@ -1,12 +1,15 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
 export const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,6 +25,14 @@ export const Auth = () => {
   return (
     <div className="min-h-screen bg-background pt-24 px-4">
       <div className="max-w-md mx-auto">
+        <Button 
+          variant="ghost" 
+          className="mb-4" 
+          onClick={() => navigate(-1)}
+        >
+          <ArrowRight className="ml-2 h-4 w-4" />
+          رجوع
+        </Button>
         <Card>
           <CardHeader>
             <CardTitle>{isLogin ? "تسجيل الدخول" : "إنشاء حساب"}</CardTitle>
