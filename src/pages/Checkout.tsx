@@ -94,7 +94,7 @@ const Checkout = () => {
               </Button>
             </div>
 
-            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/20">
+            <Card className="border-2 shadow-lg bg-gradient-to-br from-background to-muted/20 mb-8">
               <CardHeader>
                 <CardTitle className="text-xl text-center">ملخص الطلب</CardTitle>
               </CardHeader>
