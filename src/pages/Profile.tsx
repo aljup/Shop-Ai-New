@@ -144,8 +144,9 @@ export const Profile = () => {
               <div className="space-y-2">
                 <label>البريد الإلكتروني</label>
                 <Input
-                  value={profile.email}
-                  onChange={(e) => setProfile({...profile, email: e.target.value})}
+                  value={user?.email}
+                  disabled
+                  className="bg-muted"
                 />
               </div>
               
