@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
@@ -37,6 +38,7 @@ const paymentMethods = [
 
 const Checkout = () => {
   const { items } = useCart();
+  const [showForm, setShowForm] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<string>('');
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -44,6 +46,7 @@ const Checkout = () => {
   const form = useForm<CheckoutForm>();
 
   const onSubmit = (data: CheckoutForm) => {
+    setShowForm(false);
     setShowConfirmation(true);
   };
 
@@ -81,58 +84,14 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-card rounded-lg shadow-sm p-6">
-                  <h2 className="text-xl font-semibold mb-6">معلومات الشخصية</h2>
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>الاسم الكامل</FormLabel>
-                        <FormControl>
-                          <Input placeholder="ادخل اسمك الكامل" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>رقم الهاتف</FormLabel>
-                        <FormControl>
-                          <Input type="tel" placeholder="ادخل رقم هاتفك" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>البريد الإلكتروني</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="ادخل بريدك الإلكتروني" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button 
-                    type="submit" 
-                    className="w-full"
-                    disabled={!selectedPayment}
-                  >
-                    <CreditCard className="w-4 h-4 ml-2" />
-                    إتمام الشراء
-                  </Button>
-                </form>
-              </Form>
+              <Button 
+                className="w-full"
+                disabled={!selectedPayment}
+                onClick={() => setShowForm(true)}
+              >
+                <CreditCard className="w-4 h-4 ml-2" />
+                متابعة الدفع
+              </Button>
             </div>
 
             <div className="bg-card rounded-lg shadow-sm p-6 h-fit">
@@ -158,6 +117,60 @@ const Checkout = () => {
             </div>
           </div>
         </div>
+
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>معلومات الشخصية</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>الاسم الكامل</FormLabel>
+                      <FormControl>
+                        <Input placeholder="ادخل اسمك الكامل" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>رقم الهاتف</FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="ادخل رقم هاتفك" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>البريد الإلكتروني</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="ادخل بريدك الإلكتروني" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button type="submit">إتمام الشراء</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
           <DialogContent>
