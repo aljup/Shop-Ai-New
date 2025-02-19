@@ -1,5 +1,5 @@
 
-import { create } from '@tanstack/react-query';
+import { create } from 'zustand';
 import { CartItem } from '@/types/product';
 
 export interface CartStore {
