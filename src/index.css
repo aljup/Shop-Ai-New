@@ -34,11 +34,23 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+
+  /* RTL Support */
+  [dir="rtl"] .reverse-rtl {
+    @apply flex-row-reverse;
+  }
 }
 
 @layer utilities {
   .glass {
     @apply bg-white/80 backdrop-blur-md border border-white/20;
   }
-}
 
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .button-hover {
+    @apply transition-all duration-300 hover:scale-105;
+  }
+}
