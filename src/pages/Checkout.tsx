@@ -1,3 +1,4 @@
+
 import { useCart } from "@/store/cart";
 import { useForm } from "react-hook-form";
 import { Navbar } from "@/components/Navbar";
@@ -21,7 +22,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom'; // Added import for useNavigate
+import { useNavigate } from 'react-router-dom';
 
 type CheckoutForm = {
   name: string;
@@ -42,7 +43,7 @@ const Checkout = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<string>('');
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const navigate = useNavigate(); // Added useNavigate hook
+  const navigate = useNavigate();
 
   const form = useForm<CheckoutForm>();
 
@@ -53,7 +54,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar navigate={navigate} /> {/* Pass navigate function to Navbar */}
+      <Navbar />
       <main className="container mx-auto px-4 pt-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">الدفع</h1>
