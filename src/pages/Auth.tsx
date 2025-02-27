@@ -26,10 +26,14 @@ export const Auth = () => {
 
   // تحقق مما إذا كان المستخدم يأتي من رابط إعادة تعيين كلمة المرور
   useEffect(() => {
+    const hashParams = new URLSearchParams(location.hash.replace('#', ''));
     const searchParams = new URLSearchParams(location.search);
+    
+    // تحقق من وجود معلمات إعادة تعيين كلمة المرور في عنوان URL
+    const type = hashParams.get('type');
     const resetParam = searchParams.get("reset");
     
-    if (resetParam === "true") {
+    if (type === 'recovery' || resetParam === "true") {
       setIsNewPassword(true);
       setIsLogin(false);
       setIsResetPassword(false);
@@ -75,7 +79,7 @@ export const Auth = () => {
       // إذا كان المستخدم يطلب إعادة تعيين كلمة المرور
       if (isResetPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
-          redirectTo: window.location.origin + "/auth?reset=true",
+          redirectTo: window.location.origin + "/auth",
         });
         
         if (error) throw error;
@@ -86,6 +90,7 @@ export const Auth = () => {
         });
         
         setIsResetPassword(false);
+        setIsLogin(true);
         return;
       }
       

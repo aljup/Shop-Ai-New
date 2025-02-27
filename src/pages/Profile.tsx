@@ -8,6 +8,30 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { Navbar } from "@/components/Navbar";
 import { useToast } from "@/components/ui/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LockKeyhole, User } from "lucide-react";
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(6, "كلمة المرور الحالية يجب أن تكون على الأقل 6 أحرف"),
+  newPassword: z.string().min(6, "كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف"),
+  confirmPassword: z.string().min(6, "تأكيد كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "كلمة المرور الجديدة وتأكيدها غير متطابقين",
+  path: ["confirmPassword"],
+});
+
+type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -21,6 +45,7 @@ export const Profile = () => {
     id: "",
   });
   const [uploading, setUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
   
   useEffect(() => {
     checkUser();
@@ -139,6 +164,54 @@ export const Profile = () => {
     }
   };
 
+  // نموذج تغيير كلمة المرور
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  const onPasswordSubmit = async (data: PasswordFormValues) => {
+    try {
+      // التحقق من كلمة المرور الحالية
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: data.currentPassword,
+      });
+      
+      if (signInError) {
+        toast({
+          variant: "destructive",
+          title: "خطأ",
+          description: "كلمة المرور الحالية غير صحيحة",
+        });
+        return;
+      }
+      
+      // تحديث كلمة المرور
+      const { error } = await supabase.auth.updateUser({
+        password: data.newPassword,
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "تم تغيير كلمة المرور بنجاح",
+      });
+      
+      passwordForm.reset();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "خطأ في تغيير كلمة المرور",
+        description: error.message,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -168,62 +241,134 @@ export const Profile = () => {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="flex flex-col gap-1">
-                  <h3 className="font-medium">حالة الحساب</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {user?.email_confirmed_at ? "مفعل" : "غير مفعل"}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h3 className="font-medium">تاريخ الانضمام</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(user?.created_at).toLocaleDateString('ar')}
-                  </p>
-                </div>
-              </div>
-              {!user?.email_confirmed_at && (
-                <div className="bg-yellow-100 p-4 rounded-lg mb-4">
-                  <p className="text-yellow-800">لم يتم تفعيل حسابك بعد</p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-2"
-                    onClick={resendVerification}
-                  >
-                    إعادة إرسال رابط التفعيل
-                  </Button>
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                <label>الاسم</label>
-                <Input
-                  value={profile.name}
-                  onChange={(e) => setProfile({...profile, name: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label>البريد الإلكتروني</label>
-                <Input
-                  value={user?.email}
-                  disabled
-                  className="bg-muted"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label>رقم الهاتف</label>
-                <Input
-                  value={profile.phone}
-                  onChange={(e) => setProfile({...profile, phone: e.target.value})}
-                />
-              </div>
+            <CardContent>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="profile" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    معلومات الحساب
+                  </TabsTrigger>
+                  <TabsTrigger value="security" className="flex items-center gap-2">
+                    <LockKeyhole className="h-4 w-4" />
+                    الأمان
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="profile" className="space-y-4">
+                  {!user?.email_confirmed_at && (
+                    <div className="bg-yellow-100 p-4 rounded-lg mb-4">
+                      <p className="text-yellow-800">لم يتم تفعيل حسابك بعد</p>
+                      <Button 
+                        variant="outline" 
+                        className="mt-2"
+                        onClick={resendVerification}
+                      >
+                        إعادة إرسال رابط التفعيل
+                      </Button>
+                    </div>
+                  )}
+                  
+                  <div className="space-y-2">
+                    <label>الاسم</label>
+                    <Input
+                      value={profile.name}
+                      onChange={(e) => setProfile({...profile, name: e.target.value})}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label>البريد الإلكتروني</label>
+                    <Input
+                      value={user?.email}
+                      disabled
+                      className="bg-muted"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label>رقم الهاتف</label>
+                    <Input
+                      value={profile.phone}
+                      onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                    />
+                  </div>
 
-              <Button onClick={updateProfile} className="w-full">
-                حفظ التغييرات
-              </Button>
+                  <Button onClick={updateProfile} className="w-full">
+                    حفظ التغييرات
+                  </Button>
+                </TabsContent>
+                
+                <TabsContent value="security" className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl">تغيير كلمة المرور</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Form {...passwordForm}>
+                        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
+                          <FormField
+                            control={passwordForm.control}
+                            name="currentPassword"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>كلمة المرور الحالية</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="password" 
+                                    placeholder="أدخل كلمة المرور الحالية" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={passwordForm.control}
+                            name="newPassword"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>كلمة المرور الجديدة</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="password" 
+                                    placeholder="أدخل كلمة المرور الجديدة" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={passwordForm.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>تأكيد كلمة المرور</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="password" 
+                                    placeholder="أعد إدخال كلمة المرور الجديدة" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <Button type="submit" className="w-full">
+                            تغيير كلمة المرور
+                          </Button>
+                        </form>
+                      </Form>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </div>
