@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ShoppingCart, ChevronDown } from "lucide-react";
+import { ShoppingCart, ChevronDown, Lock } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCart } from "@/store/cart";
 import { useEffect, useState } from "react";
@@ -56,6 +56,12 @@ export const Navbar = () => {
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
                   <Link to="/profile">إدارة الحساب</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center gap-2" onClick={() => document.getElementById("security-tab")?.click()}>
+                    <Lock className="h-4 w-4" />
+                    تغيير كلمة المرور
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

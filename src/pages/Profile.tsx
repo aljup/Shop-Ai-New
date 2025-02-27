@@ -49,6 +49,11 @@ export const Profile = () => {
   
   useEffect(() => {
     checkUser();
+    // تحقق من وجود هاش في العنوان وتعيين التبويب المناسب
+    const hash = window.location.hash;
+    if (hash === '#security') {
+      setActiveTab('security');
+    }
   }, []);
 
   const checkUser = async () => {
@@ -248,7 +253,7 @@ export const Profile = () => {
                     <User className="h-4 w-4" />
                     معلومات الحساب
                   </TabsTrigger>
-                  <TabsTrigger value="security" className="flex items-center gap-2">
+                  <TabsTrigger id="security-tab" value="security" className="flex items-center gap-2">
                     <LockKeyhole className="h-4 w-4" />
                     الأمان
                   </TabsTrigger>
