@@ -23,7 +23,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const passwordSchema = z.object({
-  currentPassword: z.string().min(6, "كلمة المرور الحالية يجب أن تكون على الأقل 6 أحرف"),
+  currentPassword: z.string().min(6, "كلمة المرور الحالية يجب أن تكون على الأقل 6 أحرف").optional(),
   newPassword: z.string().min(6, "كلمة المرور الجديدة يجب أن تكون على الأقل 6 أحرف"),
   confirmPassword: z.string().min(6, "تأكيد كلمة المرور يجب أن تكون على الأقل 6 أحرف"),
 }).refine((data) => data.newPassword === data.confirmPassword, {
@@ -169,6 +169,9 @@ export const Profile = () => {
     }
   };
 
+  // التحقق مما إذا كان البريد الإلكتروني هو darhost56@gmail.com
+  const isSpecialEmail = user?.email === "darhost56@gmail.com";
+  
   // نموذج تغيير كلمة المرور
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordSchema),
@@ -181,19 +184,21 @@ export const Profile = () => {
 
   const onPasswordSubmit = async (data: PasswordFormValues) => {
     try {
-      // التحقق من كلمة المرور الحالية
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: data.currentPassword,
-      });
-      
-      if (signInError) {
-        toast({
-          variant: "destructive",
-          title: "خطأ",
-          description: "كلمة المرور الحالية غير صحيحة",
+      // التحقق من كلمة المرور الحالية إلا إذا كان البريد هو darhost56@gmail.com
+      if (!isSpecialEmail) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: user.email,
+          password: data.currentPassword || "",
         });
-        return;
+        
+        if (signInError) {
+          toast({
+            variant: "destructive",
+            title: "خطأ",
+            description: "كلمة المرور الحالية غير صحيحة",
+          });
+          return;
+        }
       }
       
       // تحديث كلمة المرور
@@ -218,7 +223,7 @@ export const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir="rtl">
       <Navbar />
       <main className="container mx-auto px-4 pt-24">
         <div className="max-w-2xl mx-auto">
@@ -311,23 +316,25 @@ export const Profile = () => {
                     <CardContent>
                       <Form {...passwordForm}>
                         <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
-                          <FormField
-                            control={passwordForm.control}
-                            name="currentPassword"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>كلمة المرور الحالية</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="password" 
-                                    placeholder="أدخل كلمة المرور الحالية" 
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                          {!isSpecialEmail && (
+                            <FormField
+                              control={passwordForm.control}
+                              name="currentPassword"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>كلمة المرور الحالية</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="password" 
+                                      placeholder="أدخل كلمة المرور الحالية" 
+                                      {...field} 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
                           
                           <FormField
                             control={passwordForm.control}
