@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,17 +12,67 @@ import { useToast } from "@/components/ui/use-toast";
 export const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isResetPassword, setIsResetPassword] = useState(false);
+  const [isNewPassword, setIsNewPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     name: "",
+    newPassword: "",
+    confirmPassword: "",
   });
+
+  // تحقق مما إذا كان المستخدم يأتي من رابط إعادة تعيين كلمة المرور
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const resetParam = searchParams.get("reset");
+    
+    if (resetParam === "true") {
+      setIsNewPassword(true);
+      setIsLogin(false);
+      setIsResetPassword(false);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // إذا كان المستخدم يقوم بتعيين كلمة مرور جديدة
+      if (isNewPassword) {
+        if (formData.newPassword !== formData.confirmPassword) {
+          toast({
+            variant: "destructive",
+            title: "خطأ",
+            description: "كلمتي المرور غير متطابقتين",
+          });
+          return;
+        }
+
+        const { error } = await supabase.auth.updateUser({
+          password: formData.newPassword
+        });
+
+        if (error) throw error;
+        
+        toast({
+          title: "تم تغيير كلمة المرور بنجاح",
+          description: "يمكنك الآن تسجيل الدخول باستخدام كلمة المرور الجديدة",
+        });
+        
+        setIsNewPassword(false);
+        setIsLogin(true);
+        setFormData({
+          ...formData,
+          newPassword: "",
+          confirmPassword: "",
+          password: "",
+        });
+        return;
+      }
+
+      // إذا كان المستخدم يطلب إعادة تعيين كلمة المرور
       if (isResetPassword) {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
           redirectTo: window.location.origin + "/auth?reset=true",
@@ -39,6 +89,7 @@ export const Auth = () => {
         return;
       }
       
+      // إذا كان المستخدم يقوم بتسجيل الدخول
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -50,6 +101,7 @@ export const Auth = () => {
         });
         navigate("/profile");
       } else {
+        // إذا كان المستخدم يقوم بإنشاء حساب جديد
         const { error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
@@ -75,6 +127,44 @@ export const Auth = () => {
   };
 
   const renderAuthForm = () => {
+    // نموذج إدخال كلمة مرور جديدة
+    if (isNewPassword) {
+      return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
+            <Input
+              id="newPassword"
+              type="password"
+              placeholder="أدخل كلمة المرور الجديدة"
+              value={formData.newPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, newPassword: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="أعد إدخال كلمة المرور الجديدة"
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full">
+            تغيير كلمة المرور
+          </Button>
+        </form>
+      );
+    }
+
+    // نموذج طلب إعادة تعيين كلمة المرور
     if (isResetPassword) {
       return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -107,6 +197,7 @@ export const Auth = () => {
       );
     }
 
+    // نموذج تسجيل الدخول أو إنشاء حساب
     return (
       <form onSubmit={handleSubmit} className="space-y-4">
         {!isLogin && (
@@ -191,11 +282,13 @@ export const Auth = () => {
         <Card>
           <CardHeader>
             <CardTitle>
-              {isResetPassword 
-                ? "استعادة كلمة المرور" 
-                : isLogin 
-                  ? "تسجيل الدخول" 
-                  : "إنشاء حساب"
+              {isNewPassword 
+                ? "تغيير كلمة المرور"
+                : isResetPassword 
+                  ? "استعادة كلمة المرور" 
+                  : isLogin 
+                    ? "تسجيل الدخول" 
+                    : "إنشاء حساب"
               }
             </CardTitle>
           </CardHeader>
